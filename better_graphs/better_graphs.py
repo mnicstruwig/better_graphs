@@ -15,6 +15,8 @@ import numpy as np
 def make_better_graph(ax, x_new_ticks=None, y_new_ticks=None, **kwargs):
     """Make a graph better"""
 
+    set_limits(ax, **kwargs)
+
     if x_new_ticks is not None:
         x_new_locs = list(x_new_ticks.keys())
         x_new_labels = list(x_new_ticks.values())
@@ -24,9 +26,6 @@ def make_better_graph(ax, x_new_ticks=None, y_new_ticks=None, **kwargs):
         y_new_locs = list(y_new_ticks.keys())
         y_new_labels = list(y_new_ticks.values())
         add_custom_ticks(ax, new_locs=y_new_locs, new_labels=y_new_labels, which='y')
-
-    sns.despine(ax=ax, trim=False)
-    set_limits(ax, **kwargs)
 
 
 def beautify_bars_h(ax, index, rounding=2, factor=0.1, num_bars_per_group=1):
@@ -122,21 +121,25 @@ def add_custom_ticks(ax, new_locs, new_labels, which='x'):
 
     """
 
-    locs = None
+    ticks = None
     labels = None
 
     if which == 'x':
-        xticks = ax.get_xticks()
-        ax.set_xticklabels(xticks)  # "Set" ticks must be done to access text
-        locs, labels = plt.xticks()  # Get xticks
-        labels = [x.get_text() for x in labels]  # Extract text from labels
-    elif which == 'y':
-        yticks = ax.get_yticks()
-        ax.set_yticklabels(yticks)
-        locs, labels = plt.yticks()
-        labels = [x.get_text() for x in labels]
+        ticks = ax.get_xticks()
+        # hack that fixes a weird bug in mpl where a float will not be rounded correctly, causing havoc
+        ticks = [np.round(tick, 9) for tick in ticks]
+        ax.set_xticklabels(ticks)  # "Set" ticks must be done to access text
+        labels = ax.get_xticklabels()
+        labels = [t.get_text() for t in labels]  # Extract text from labels
 
-    tick_dict = dict(zip(locs, labels))  # Place ticks in dictionary
+    elif which == 'y':
+        ticks = ax.get_yticks()
+        ticks = [np.round(tick, 9) for tick in ticks]  # Same hack as used for xticks above
+        ax.set_yticklabels(ticks)
+        labels = ax.get_yticklabels()
+        labels = [t.get_text() for t in labels]
+
+    tick_dict = dict(zip(ticks, labels))  # Place ticks in dictionary
 
     # Update tick dictionary
     for loc, lab in zip(new_locs, new_labels):
