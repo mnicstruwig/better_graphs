@@ -155,7 +155,7 @@ def add_custom_ticks(ax, new_locs, new_labels, which='x'):
         ax.set_yticklabels(labels)
 
 
-def set_limits(ax, x_factor=0.1, y_factor=0.1, spines=True):
+def set_limits(ax, x_factor=0.1, y_factor=0.1, despine=True):
     """
     Set the limits of the axes, have them end with ticks.
 
@@ -173,25 +173,58 @@ def set_limits(ax, x_factor=0.1, y_factor=0.1, spines=True):
 
     # x-axis
     xticks = ax.get_xticks()
-    ax.set_xticklabels(xticks)  # Must be set before getting access
-    locs, labels = plt.xticks()
 
-    x_max = np.max(locs)
-    x_min = np.min(locs)
+    # Trim
+    if xticks.size != 0:
+        mask = xticks >= min(ax.get_xlim())  # Select all ticks _larger_ than the lower axis limit
+        firsttick = xticks[mask][0]  # Select first tick above the axis lower limit
+
+        mask = xticks <= max(ax.get_xlim())  # Select all ticks _smaller_ than the upper axis limit
+        lasttick = xticks[mask][-1]  # Select first tick below the axis upper limit
+
+        ax.spines['bottom'].set_bounds(firsttick, lasttick)
+        ax.spines['top'].set_bounds(firsttick, lasttick)
+
+        # Mask our new ticks to be within the range of our "cut" axis
+        newticks = xticks[xticks <= lasttick]
+        newticks = newticks[newticks >= firsttick]
+
+        ax.set_xticks(newticks)
 
     # y-axis
     yticks = ax.get_yticks()
-    ax.set_yticklabels(yticks)
-    locs, labels = plt.yticks()
 
-    y_max = np.max(locs)
-    y_min = np.min(locs)
+    # Trim
+    if yticks.size != 0:
+        mask = yticks >= min(ax.get_ylim())  # Select all ticks _larger_ than the lower axis limit
+        firsttick = yticks[mask][0]  # Select first tick above the axis lower limit
 
-    ax.set_xlim(x_min - x_max * x_factor,
-                x_max * (x_factor + 1))  # Sets x limits
-    ax.set_ylim(y_min - y_max * y_factor,
-                y_max * (y_factor + 1))  # Sets y limits
+        mask = yticks <= max(ax.get_ylim())  # Select all ticks _smaller_ than the upper axis limit
+        lasttick = yticks[mask][-1]  # Select first tick below the axis upper limit
 
-    if spines:
-        ax.spines['bottom'].set_bounds(x_min, x_max)
-        ax.spines['left'].set_bounds(y_min, y_max)
+        ax.spines['left'].set_bounds(firsttick, lasttick)
+        ax.spines['right'].set_bounds(firsttick, lasttick)
+
+        # Mask our new ticks to be within the range of our "cut" axis
+        newticks = yticks[yticks <= lasttick]
+        newticks = newticks[newticks >= firsttick]
+
+        ax.set_yticks(newticks)
+
+    # Update our working list of ticks
+    xticks = ax.get_xticks()
+    yticks = ax.get_yticks()
+
+    # Rescale plot area
+    x_max = max(xticks)
+    x_min = min(xticks)
+    y_max = max(yticks)
+    y_min = min(yticks)
+
+    # Set new x limits
+    ax.set_xlim(x_min - x_max * x_factor, x_max * (x_factor + 1))
+    ax.set_ylim(y_min - y_max * y_factor, y_max * (y_factor + 1))
+
+    if despine:
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
