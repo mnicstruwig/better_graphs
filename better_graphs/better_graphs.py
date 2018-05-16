@@ -12,6 +12,23 @@ import seaborn as sns
 import numpy as np
 
 
+def make_better_graph(ax, x_new_ticks=None, y_new_ticks=None, **kwargs):
+    """Make a graph better"""
+
+    if x_new_ticks is not None:
+        x_new_locs = list(x_new_ticks.keys())
+        x_new_labels = list(x_new_ticks.values())
+        add_custom_ticks(ax, new_locs=x_new_locs, new_labels=x_new_labels, which='x')
+
+    if y_new_ticks is not None:
+        y_new_locs = list(y_new_ticks.keys())
+        y_new_labels = list(y_new_ticks.values())
+        add_custom_ticks(ax, new_locs=y_new_locs, new_labels=y_new_labels, which='y')
+
+    sns.despine(ax=ax, trim=False)
+    set_limits(ax, **kwargs)
+
+
 def beautify_bars_h(ax, index, rounding=2, factor=0.1, num_bars_per_group=1):
     """
     Beautify a horizontal bar plot.
@@ -88,7 +105,7 @@ def beautify_bars_h(ax, index, rounding=2, factor=0.1, num_bars_per_group=1):
         ax.spines['top'].set_visible(False)
 
 
-def add_custom_ticks(ax, newLocs, newLabels, which='x'):
+def add_custom_ticks(ax, new_locs, new_labels, which='x'):
     """
     Add custom ticks to plot axes `ax` on either the x or y axis at location `newLocs` with tick labels `newLabels`.
     Existing ticks will be overwritten.
@@ -96,8 +113,8 @@ def add_custom_ticks(ax, newLocs, newLabels, which='x'):
     Parameters
     ----------
     ax
-    newLocs
-    newLabels
+    new_locs
+    new_labels
     which
 
     Returns
@@ -122,7 +139,7 @@ def add_custom_ticks(ax, newLocs, newLabels, which='x'):
     tick_dict = dict(zip(locs, labels))  # Place ticks in dictionary
 
     # Update tick dictionary
-    for loc, lab in zip(newLocs, newLabels):
+    for loc, lab in zip(new_locs, new_labels):
         tick_dict[loc] = lab
 
     # Extract tick locations and labels
@@ -178,5 +195,3 @@ def set_limits(ax, x_factor=0.1, y_factor=0.1, spines=True):
     if spines:
         ax.spines['bottom'].set_bounds(x_min, x_max)
         ax.spines['left'].set_bounds(y_min, y_max)
-
-

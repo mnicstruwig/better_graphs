@@ -30,7 +30,7 @@ def set_pretty_defaults(palette='Set1', context='paper', font_scale=2, line_widt
     plt.rc('lines', linewidth=line_width)
 
     # Additional matplotlib rc tweaks
-    plt.rc(**kwargs)
+    # plt.rc(**kwargs)
 
     # Enable LaTeX font rendering
     if tex:
