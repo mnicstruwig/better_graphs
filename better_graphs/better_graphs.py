@@ -12,10 +12,14 @@ import seaborn as sns
 import numpy as np
 
 
-def make_better_graph(ax, x_new_ticks=None, y_new_ticks=None, **kwargs):
+def make_better_graph(ax, x_new_ticks=None, y_new_ticks=None, only_new_ticks=False, **kwargs):
     """Make a graph better"""
 
     set_limits(ax, **kwargs)
+
+    if only_new_ticks:
+        ax.set_xticks([])
+        ax.set_yticks([])
 
     if x_new_ticks is not None:
         x_new_locs = list(x_new_ticks.keys())
