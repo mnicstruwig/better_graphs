@@ -224,7 +224,6 @@ def set_limits(ax, x_factor=0.1, y_factor=0.1, despine=True):
     y_max = max(yticks)
     y_min = min(yticks)
 
-    # Set new x limits
     ax.set_xlim(x_min - x_max * x_factor, x_max * (x_factor + 1))
     ax.set_ylim(y_min - y_max * y_factor, y_max * (y_factor + 1))
 
