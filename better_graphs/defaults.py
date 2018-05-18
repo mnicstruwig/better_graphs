@@ -19,9 +19,9 @@ def set_pretty_defaults(palette='Set1', context='paper', font_scale=2, line_widt
         Line width to use when drawing plots.
     """
     
-    tex_font = 'cm'
-    if 'tex_font' in kwargs:
-        tex_font = kwargs['tex_font']
+    font = 'CMU Serif'
+    if 'font' in kwargs:
+        font = kwargs['font']
 
     # Set Seaborn template
     sns.set_style('ticks')
@@ -39,6 +39,6 @@ def set_pretty_defaults(palette='Set1', context='paper', font_scale=2, line_widt
     # Enable LaTeX font rendering
     if tex:
         plt.rc('text', usetex=True)
-        plt.rc('font', serif=tex_font)
+        plt.rc('font', serif=font)
         plt.rc('font', family='serif')
         plt.rc('text.latex', preamble=r'\usepackage{amsmath}')

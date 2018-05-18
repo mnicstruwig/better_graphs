@@ -112,6 +112,26 @@ def beautify_bars_h(ax, index, rounding=2, factor=0.1, num_bars_per_group=1):
         ax.spines['top'].set_visible(False)
 
 
+def _tick_label_workaround(ticks):
+    """
+    Correctly formats tick labels to be integers or floats depending on the tick value
+    :param ticks:
+    :return:
+    """
+    tick_labels = ticks
+    all_ints = True
+
+    for tick in ticks:
+        if np.abs(tick - int(tick)) > 0:
+            all_ints = False
+            break
+
+    if all_ints:
+        tick_labels = [str(int(tick)) for tick in ticks]
+
+    return tick_labels
+
+
 def add_custom_ticks(ax, new_locs, new_labels, which='x'):
     """
     Add custom ticks to plot axes `ax` on either the x or y axis at location `newLocs` with tick labels `newLabels`.
@@ -136,14 +156,19 @@ def add_custom_ticks(ax, new_locs, new_labels, which='x'):
         ticks = ax.get_xticks()
         # hack that fixes a weird bug in mpl where a float will not be rounded correctly, causing havoc
         ticks = [np.round(tick, 9) for tick in ticks]
-        ax.set_xticklabels(ticks)  # "Set" ticks must be done to access text
+        tick_labels = _tick_label_workaround(ticks)
+
+        ax.set_xticklabels(tick_labels)  # "Set" ticks must be done to access text
+        print(ax.get_xticklabels()[:])
         labels = ax.get_xticklabels()
         labels = [t.get_text() for t in labels]  # Extract text from labels
 
     elif which == 'y':
         ticks = ax.get_yticks()
         ticks = [np.round(tick, 9) for tick in ticks]  # Same hack as used for xticks above
-        ax.set_yticklabels(ticks)
+        tick_labels = _tick_label_workaround(ticks)
+
+        ax.set_yticklabels(tick_labels)
         labels = ax.get_yticklabels()
         labels = [t.get_text() for t in labels]
 
