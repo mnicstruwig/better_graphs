@@ -159,7 +159,6 @@ def add_custom_ticks(ax, new_locs, new_labels, which='x'):
         tick_labels = _tick_label_workaround(ticks)
 
         ax.set_xticklabels(tick_labels)  # "Set" ticks must be done to access text
-        print(ax.get_xticklabels()[:])
         labels = ax.get_xticklabels()
         labels = [t.get_text() for t in labels]  # Extract text from labels
 
