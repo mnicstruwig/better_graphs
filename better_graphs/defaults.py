@@ -19,7 +19,7 @@ def set_pretty_defaults(palette='Set1', context='paper', font_scale=2, line_widt
         Line width to use when drawing plots.
     """
     
-    font = 'CMU Serif'
+    font = 'DejaVu Sans'
     if 'font' in kwargs:
         font = kwargs['font']
 
