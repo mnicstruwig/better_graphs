@@ -1,7 +1,6 @@
 # better_graphs
-Tools for making better graphs in Matplotlib, inspired by Trees, Maps and Theorems
+Tools for making better graphs in Matplotlib, inspired by "Trees, Maps and Theorems" by Jean-luc Doumont.
 
 ## TODO
- - Add examples
- - Figure out how to package nicely
- - Add complete docstrings (everything is commented at least)
+ - Packaging.
+ - Complete documentation.
